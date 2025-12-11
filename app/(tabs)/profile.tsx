@@ -1,13 +1,43 @@
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { logout, getToken } from "../auth/authStore";
 
 export default function ProfileScreen() {
+  const router = useRouter();
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const t = await getToken();
+      if (mounted) setIsLogged(!!t);
+    })();
+    return () => { mounted = false; };
+  }, []);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Log out</Text>
-      </TouchableOpacity>
+      {isLogged ? (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={async () => {
+            await logout();
+            setIsLogged(false);
+            router.push("/(tabs)");
+          }}
+        >
+          <Text style={styles.buttonText}>Log out</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/(auth)/login")}
+        >
+          <Text style={styles.buttonText}>Iniciar sesión</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
