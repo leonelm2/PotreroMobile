@@ -15,9 +15,9 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="index"
         options={{
-          title: "Store",
+          title: "Tienda",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="storefront-outline" size={size} color={color} />
           ),
@@ -27,7 +27,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="library"
         options={{
-          title: "Library",
+          title: "Biblioteca",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="library-outline" size={size} color={color} />
           ),

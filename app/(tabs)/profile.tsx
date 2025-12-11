@@ -17,7 +17,7 @@ export default function ProfileScreen() {
   }, []);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.title}>Perfil</Text>
 
       {isLogged ? (
         <TouchableOpacity
@@ -28,7 +28,7 @@ export default function ProfileScreen() {
             router.push("/(tabs)");
           }}
         >
-          <Text style={styles.buttonText}>Log out</Text>
+          <Text style={styles.buttonText}>Cerrar sesion</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
