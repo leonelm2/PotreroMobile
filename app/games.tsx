@@ -1,9 +1,9 @@
 // app/(tabs)/games.tsx
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
-import { router } from "expo-router";
-import GameCard from "../components/GameCard";
 import api from "../app/api/api";
+import GameCard from "../components/GameCard";
 
 interface Game {
   _id: string;
