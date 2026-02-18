@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, TouchableOpacity, Dimensions } from "react-native";
 import api from "../api/api";
-import { getToken } from "../auth/authStore";
+import { getToken } from "../auth/_authStore";
 import { useRouter } from "expo-router";
 
 interface PurchasedGame {

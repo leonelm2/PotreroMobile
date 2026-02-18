@@ -3,7 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState, useRef } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import api from "../api/api";
-import { getToken } from "../auth/authStore";
+import { getToken } from "../auth/_authStore";
 
 interface Game {
   _id: string;

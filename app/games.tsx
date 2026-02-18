@@ -5,12 +5,17 @@ import { router } from "expo-router";
 import GameCard from "../components/GameCard";
 import api from "../app/api/api";
 
+interface Game {
+  _id: string;
+  [key: string]: unknown;
+}
+
 const numCols = 2;
 const screenW = Dimensions.get("window").width;
 const itemW = (screenW - 48) / numCols;
 
 export default function Games() {
-  const [games, setGames] = useState([]);
+  const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
     api

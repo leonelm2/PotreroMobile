@@ -1,65 +1,75 @@
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import api from "../api/api";
-import { saveToken } from "../auth/authStore";
-import { router } from "expo-router";
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useAuth } from '../auth/_AuthProvider';
 
 export default function Login() {
-  const [usernameOrEmail, setUser] = useState("");
-  const [password, setPass] = useState("");
+  const [form, setForm] = useState({ usernameOrEmail: '', password: '' });
+  const [error, setError] = useState('');
+  const { login } = useAuth();
+  const router = useRouter();
 
-  async function handleLogin() {
+  const handle = async () => {
     try {
-      const res = await api.post("/auth/login", {
-        usernameOrEmail,
-        password
-      });
-
-      await saveToken(res.data.token);
-
-      Alert.alert("Bienvenido", "Login exitoso");
-      router.replace("/"); // manda al home
-    } catch (error) {
-      Alert.alert("Error", "Credenciales incorrectas");
+      await login(form.usernameOrEmail, form.password);
+      router.replace('/(tabs)');
+    } catch (err: any) {
+      setError(err.response?.data?.msg || 'Error al iniciar sesión');
     }
-  }
+  };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0b0f13", padding: 20 }}>
-      <Text style={{ color: "#fff", fontSize: 24, marginBottom: 20 }}>Iniciar Sesión</Text>
+    <ScrollView className="flex-1 bg-ink">
+      <View className="min-h-screen flex items-center justify-center px-6 py-12">
+        <View className="rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-8 w-full max-w-md">
+          <View className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 self-start">
+            <Text className="text-white/80 text-xs uppercase tracking-widest">Acceso</Text>
+          </View>
+          
+          <Text className="text-3xl tracking-wide text-white mt-3 font-bold">Bienvenido a POTRERO</Text>
+          <Text className="text-white/60 text-sm mt-2">Inicia sesión para gestionar tus torneos.</Text>
+          
+          <View className="mt-6">
+            <TextInput
+              value={form.usernameOrEmail}
+              onChangeText={(text) => setForm({ ...form, usernameOrEmail: text })}
+              placeholder="Usuario o email"
+              placeholderTextColor="#8b8b99"
+              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10"
+              autoCapitalize="none"
+            />
+            
+            <TextInput
+              value={form.password}
+              onChangeText={(text) => setForm({ ...form, password: text })}
+              placeholder="Contraseña"
+              placeholderTextColor="#8b8b99"
+              secureTextEntry
+              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mt-4"
+            />
+            
+            {error ? (
+              <Text className="text-red-400 text-sm mt-2">{error}</Text>
+            ) : null}
+            
+            <TouchableOpacity 
+              onPress={handle}
+              className="px-5 py-3 rounded-xl bg-ember mt-4"
+            >
+              <Text className="text-white font-semibold text-center">Entrar</Text>
+            </TouchableOpacity>
 
-      <TextInput
-        placeholder="Usuario o Email"
-        placeholderTextColor="#777"
-        style={{ backgroundColor: "#1a1f25", color: "#fff", padding: 10, borderRadius: 8 }}
-        onChangeText={setUser}
-      />
-
-      <TextInput
-        placeholder="Contraseña"
-        placeholderTextColor="#777"
-        secureTextEntry
-        style={{
-          backgroundColor: "#1a1f25",
-          color: "#fff",
-          padding: 10,
-          borderRadius: 8,
-          marginTop: 10
-        }}
-        onChangeText={setPass}
-      />
-
-      <TouchableOpacity
-        onPress={handleLogin}
-        style={{
-          backgroundColor: "#4caf50",
-          padding: 12,
-          borderRadius: 8,
-          marginTop: 20
-        }}
-      >
-        <Text style={{ color: "#fff", fontWeight: "700", textAlign: "center" }}>Entrar</Text>
-      </TouchableOpacity>
-    </View>
+            <TouchableOpacity 
+              onPress={() => router.push('/(auth)/register')}
+              className="mt-4"
+            >
+              <Text className="text-white/60 text-center text-sm">
+                ¿No tienes cuenta? <Text className="text-ember">Regístrate</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   );
 }

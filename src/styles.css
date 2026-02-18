@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0b0b0d;
+  --coal: #141417;
+  --ash: #1d1d22;
+  --ember: #c0162e;
+  --ember-strong: #e11936;
+  --ember-dark: #8f0c1f;
+  --steel: #8b8b99;
+}
+
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  color: #f2f2f5;
+  background-color: var(--ink);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(193, 22, 46, 0.18), transparent 45%),
+    radial-gradient(circle at 80% 10%, rgba(225, 25, 54, 0.12), transparent 40%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent 40%);
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Bebas Neue', 'Space Grotesk', sans-serif;
+  letter-spacing: 0.03em;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20;
+  }
+
+  .card-solid {
+    @apply rounded-2xl bg-neutral-900/80 border border-white/10 shadow-lg shadow-black/30;
+  }
+
+  .input {
+    @apply w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-red-600;
+  }
+
+  .select {
+    @apply w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-red-600;
+  }
+
+  .textarea {
+    @apply w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 focus:outline-none focus:ring-2 focus:ring-red-600 min-h-[140px];
+  }
+
+  .btn-primary {
+    @apply px-5 py-2.5 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-500 transition;
+  }
+
+  .btn-outline {
+    @apply px-5 py-2.5 rounded-xl border border-white/30 text-white hover:border-red-500 hover:text-red-300 transition;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 rounded-xl bg-white/5 text-white hover:bg-white/10 transition;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs uppercase tracking-widest bg-white/10 text-white/80;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl tracking-wide;
+  }
+
+  .glass {
+    @apply backdrop-blur-xl bg-white/5 border border-white/10;
+  }
+}
+
+.bg-ash {
+  background-color: var(--ink);
+}

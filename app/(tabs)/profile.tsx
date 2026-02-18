@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { logout, getToken } from "../auth/authStore";
+import { logout, getToken } from "../auth/_authStore";
 
 export default function ProfileScreen() {
   const router = useRouter();
