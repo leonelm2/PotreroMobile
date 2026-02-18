@@ -1,0 +1,2 @@
+export const API_ORIGIN = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.36:5000';
+export const API_BASE_URL = `${API_ORIGIN}/api`;

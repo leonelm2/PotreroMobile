@@ -119,12 +119,9 @@ export default function Cart() {
       }
 
       // Confirmar pago para cada orden pendiente
-      console.log("DEBUG: Iniciando pago para", orders.length, "órdenes");
-      
       for (let i = 0; i < orders.length; i++) {
         const order = orders[i];
-        console.log(`DEBUG: Pagando orden ${i + 1}/${orders.length}:`, order._id, "status:", order.status);
-        
+
         const response = await api.post(
           `/purchases/${order._id}/pay`,
           {
@@ -135,11 +132,7 @@ export default function Cart() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        
-        console.log(`DEBUG: Orden ${i + 1} pagada exitosamente:`, response.data);
       }
-
-      console.log("DEBUG: Todas las órdenes pagadas exitosamente");
       setProcessing(false);
       
       // Mostrar éxito

@@ -8,7 +8,6 @@ import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../auth/_AuthProvider';
 import { useColorScheme } from '../components/useColorScheme';
-import '../global.css';
 
 // Evita que el splash desaparezca antes de cargar fuentes
 SplashScreen.preventAutoHideAsync();
@@ -34,15 +33,36 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  useColorScheme();
   return (
     <SafeAreaProvider>
       <AuthProvider>
         <ThemeProvider value={DarkTheme}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(auth)/login" />
-            <Stack.Screen name="(auth)/register" />
-            <Stack.Screen name="(tabs)" />
+          <Stack
+            screenOptions={({ navigation }) => ({
+              headerShown: true,
+              headerBackTitleVisible: false,
+              headerBackButtonDisplayMode: 'minimal',
+              headerStyle: {
+                backgroundColor: '#0b0b0d',
+              },
+              headerTintColor: '#fff',
+              headerShadowVisible: false,
+              headerTitleStyle: {
+                fontSize: 17,
+                fontWeight: '700',
+              },
+            })}
+          >
+            <Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(auth)/register"
+              options={{
+                headerShown: true,
+                title: '',
+              }}
+            />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           </Stack>
         </ThemeProvider>
@@ -50,3 +70,4 @@ function RootLayoutNav() {
     </SafeAreaProvider>
   );
 }
+

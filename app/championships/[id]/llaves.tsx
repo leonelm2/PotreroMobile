@@ -1,6 +1,6 @@
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from '../../../api/client';
 import { useAuth } from '../../../auth/_AuthProvider';
 
@@ -47,7 +47,7 @@ export default function BracketScreen() {
 
   if (authLoading) {
     return (
-      <View className="flex-1 bg-ink items-center justify-center">
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#c0162e" />
       </View>
     );
@@ -90,64 +90,64 @@ export default function BracketScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-ink items-center justify-center">
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#c0162e" />
       </View>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-ink">
-      <View className="max-w-6xl px-6 py-8">
-        <View className="flex flex-col gap-2">
-          <View className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 self-start">
-            <Text className="text-white/80 text-xs uppercase tracking-widest">Fase eliminatoria</Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.headerWrap}>
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>Fase eliminatoria</Text>
           </View>
-          <Text className="text-3xl tracking-wide text-white font-bold">Llaves del campeonato</Text>
-          <Text className="text-white/60">Carga resultados para avanzar en las llaves.</Text>
+          <Text style={styles.title}>Llaves del campeonato</Text>
+          <Text style={styles.subtitle}>Carga resultados para avanzar en las llaves.</Text>
         </View>
 
-        <View className="mt-8 flex flex-col gap-4">
+        <View style={styles.roundsWrap}>
           {Object.keys(grouped).length === 0 && (
-            <View className="rounded-2xl border border-white/10 bg-white/5 p-6">
-              <Text className="text-white/60">Todavía no hay llaves generadas.</Text>
+            <View style={styles.card}>
+              <Text style={styles.mutedText}>Todavía no hay llaves generadas.</Text>
             </View>
           )}
 
           {Object.entries(grouped).map(([round, roundMatches]) => (
-            <View key={round} className="rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5">
-              <Text className="text-xl text-white font-semibold">{roundLabels[round] || round}</Text>
-              <View className="mt-4 flex flex-col gap-3">
+            <View key={round} style={styles.card}>
+              <Text style={styles.cardTitle}>{roundLabels[round] || round}</Text>
+              <View style={styles.matchesList}>
                 {roundMatches.map((match) => (
-                  <View key={match._id} className="rounded-2xl bg-neutral-900/80 border border-white/10 shadow-lg shadow-black/30 p-4">
-                    <Text className="text-lg text-white">
+                  <View key={match._id} style={styles.matchCard}>
+                    <Text style={styles.matchTeams}>
                       {match.homeTeam?.name || 'Por definir'} vs {match.awayTeam?.name || 'Por definir'}
                     </Text>
-                    <Text className="text-sm text-white/60 mt-1">Estado: {match.status || 'pending'}</Text>
+                    <Text style={styles.matchStatus}>Estado: {match.status || 'pending'}</Text>
 
-                    <View className="flex flex-row items-center gap-2 mt-3">
+                    <View style={styles.actionsRow}>
                       <TextInput
                         keyboardType="number-pad"
-                        className="w-20 p-2 rounded-lg bg-neutral-900/70 text-white border border-white/10 text-center"
+                        style={styles.scoreInput}
                         value={String(editing[match._id]?.homeScore ?? match.homeScore ?? '')}
                         onChangeText={(text) => updateScore(match._id, 'homeScore', Number(text || 0))}
                         editable={!!isAdmin}
                         placeholder="0"
-                        placeholderTextColor="#8b8b99"
+                        placeholderTextColor="#a3a3a3"
                       />
-                      <Text className="text-white/60">-</Text>
+                      <Text style={styles.separator}>-</Text>
                       <TextInput
                         keyboardType="number-pad"
-                        className="w-20 p-2 rounded-lg bg-neutral-900/70 text-white border border-white/10 text-center"
+                        style={styles.scoreInput}
                         value={String(editing[match._id]?.awayScore ?? match.awayScore ?? '')}
                         onChangeText={(text) => updateScore(match._id, 'awayScore', Number(text || 0))}
                         editable={!!isAdmin}
                         placeholder="0"
-                        placeholderTextColor="#8b8b99"
+                        placeholderTextColor="#a3a3a3"
                       />
                       {isAdmin && (
-                        <TouchableOpacity className="px-5 py-2.5 rounded-xl border border-white/30" onPress={() => saveResult(match._id)}>
-                          <Text className="text-white">Guardar</Text>
+                        <TouchableOpacity style={styles.saveButton} onPress={() => saveResult(match._id)}>
+                          <Text style={styles.saveButtonText}>Guardar</Text>
                         </TouchableOpacity>
                       )}
                     </View>
@@ -161,3 +161,114 @@ export default function BracketScreen() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0b0b0d',
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#0b0b0d',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    paddingBottom: 34,
+  },
+  headerWrap: {
+    gap: 6,
+  },
+  pill: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  pillText: {
+    color: '#e5e7eb',
+    fontSize: 11,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  title: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: '700',
+    marginTop: 8,
+  },
+  subtitle: {
+    color: 'rgba(255,255,255,0.65)',
+  },
+  roundsWrap: {
+    marginTop: 22,
+    gap: 12,
+  },
+  card: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    padding: 14,
+  },
+  cardTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  mutedText: {
+    color: 'rgba(255,255,255,0.65)',
+  },
+  matchesList: {
+    marginTop: 10,
+    gap: 10,
+  },
+  matchCard: {
+    backgroundColor: '#151515',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 14,
+    padding: 12,
+  },
+  matchTeams: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  matchStatus: {
+    color: 'rgba(255,255,255,0.65)',
+    fontSize: 13,
+    marginTop: 4,
+  },
+  actionsRow: {
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  scoreInput: {
+    width: 72,
+    backgroundColor: '#1f1f1f',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
+    borderRadius: 10,
+    paddingVertical: 8,
+    color: '#fff',
+    textAlign: 'center',
+  },
+  separator: {
+    color: 'rgba(255,255,255,0.65)',
+  },
+  saveButton: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  saveButtonText: {
+    color: '#fff',
+  },
+});

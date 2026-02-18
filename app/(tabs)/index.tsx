@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import api from "../../api/client";
 import { useAuth } from "../../auth/_AuthProvider";
 
@@ -49,89 +49,87 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-ink items-center justify-center">
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#c0162e" />
       </View>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-ink">
-      <View className="max-w-6xl px-6 py-8">
-        <View className="flex flex-col gap-4">
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.heroWrap}>
           <View>
-            <View className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 self-start">
-              <Text className="text-white/80 text-xs uppercase tracking-widest">Temporada 2026</Text>
+            <View style={styles.pill}>
+              <Text style={styles.pillText}>Temporada 2026</Text>
             </View>
-            <Text className="text-3xl tracking-wide text-white mt-3 font-bold">Panel principal</Text>
-            <Text className="text-white/70 max-w-xl mt-2">
+            <Text style={styles.title}>Panel principal</Text>
+            <Text style={styles.subtitle}>
               Administra disciplinas, equipos y campeonatos desde un mismo lugar. Lleva los resultados al instante.
             </Text>
           </View>
-          <View className={`gap-3 mt-2 ${isCompact ? 'flex flex-col' : 'flex flex-row'}`}>
+          <View style={[styles.actionsRow, isCompact && styles.actionsColumn]}>
             <TouchableOpacity 
-              onPress={() => router.push('/(tabs)/teams')}
-              className={`px-5 py-3 rounded-xl border border-white/30 ${isCompact ? 'w-full' : ''}`}
+              onPress={() => router.push('/(tabs)/equipos')}
+              style={[styles.secondaryButton, isCompact && styles.fullWidth]}
             >
-              <Text className="text-white">Ver equipos</Text>
+              <Text style={styles.secondaryButtonText}>Ver equipos</Text>
             </TouchableOpacity>
             {isAdmin && (
               <TouchableOpacity 
-                onPress={() => router.push('/(tabs)/championships')}
-                className={`px-5 py-3 rounded-xl bg-ember ${isCompact ? 'w-full' : ''}`}
+                onPress={() => router.push('/(tabs)/campeonatos')}
+                style={[styles.primaryButton, isCompact && styles.fullWidth]}
               >
-                <Text className="text-white font-semibold">Nuevo campeonato</Text>
+                <Text style={styles.primaryButtonText}>Nuevo campeonato</Text>
               </TouchableOpacity>
             )}
           </View>
         </View>
 
-        {/* Statistics Cards */}
-        <View className={`gap-4 mt-8 ${isCompact ? 'flex flex-col' : 'flex flex-row'}`}>
-          <View className={`rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5 ${isCompact ? '' : 'flex-1'}`}>
-            <Text className="text-sm text-white/60">Disciplinas</Text>
-            <Text className="text-3xl mt-2 font-bold text-white">{stats.disciplines}</Text>
-            <Text className="text-white/60 text-sm mt-2">Control total de deportes y formatos.</Text>
+        <View style={[styles.statsRow, isCompact && styles.actionsColumn]}>
+          <View style={[styles.statCard, !isCompact && styles.flexCard]}>
+            <Text style={styles.statLabel}>Disciplinas</Text>
+            <Text style={styles.statValue}>{stats.disciplines}</Text>
+            <Text style={styles.statHint}>Control total de deportes y formatos.</Text>
           </View>
-          <View className={`rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5 ${isCompact ? '' : 'flex-1'}`}>
-            <Text className="text-sm text-white/60">Equipos</Text>
-            <Text className="text-3xl mt-2 font-bold text-white">{stats.teams}</Text>
-            <Text className="text-white/60 text-sm mt-2">Registro de planteles y entrenadores.</Text>
+          <View style={[styles.statCard, !isCompact && styles.flexCard]}>
+            <Text style={styles.statLabel}>Equipos</Text>
+            <Text style={styles.statValue}>{stats.teams}</Text>
+            <Text style={styles.statHint}>Registro de planteles y entrenadores.</Text>
           </View>
-          <View className={`rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5 ${isCompact ? '' : 'flex-1'}`}>
-            <Text className="text-sm text-white/60">Campeonatos</Text>
-            <Text className="text-3xl mt-2 font-bold text-white">{stats.championships}</Text>
-            <Text className="text-white/60 text-sm mt-2">Competencias activas y en planificación.</Text>
+          <View style={[styles.statCard, !isCompact && styles.flexCard]}>
+            <Text style={styles.statLabel}>Campeonatos</Text>
+            <Text style={styles.statValue}>{stats.championships}</Text>
+            <Text style={styles.statHint}>Competencias activas y en planificación.</Text>
           </View>
         </View>
 
-        {/* Recent Championships */}
-        <View className="mt-10">
-          <Text className="text-2xl text-white font-bold">Campeonatos recientes</Text>
-          <View className="mt-4">
+        <View style={styles.recentWrap}>
+          <Text style={styles.recentTitle}>Campeonatos recientes</Text>
+          <View style={styles.recentList}>
             {championships.length === 0 && (
-              <View className="rounded-2xl border border-white/10 bg-white/5 p-6">
-                <Text className="text-white/60">No hay campeonatos creados.</Text>
+              <View style={styles.emptyCard}>
+                <Text style={styles.emptyText}>No hay campeonatos creados.</Text>
               </View>
             )}
             {championships.map((champ) => (
-              <View key={champ._id} className="rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5 flex flex-col mb-4">
+              <View key={champ._id} style={styles.champCard}>
                 <View>
-                  <Text className="text-xl text-white">{champ.name}</Text>
-                  <Text className="text-sm text-white/60">{champ.discipline?.name} · Estado: {champ.status}</Text>
+                  <Text style={styles.champName}>{champ.name}</Text>
+                  <Text style={styles.champMeta}>{champ.discipline?.name} · Estado: {champ.status}</Text>
                 </View>
-                <View className={`gap-3 mt-3 ${isCompact ? 'flex flex-col' : 'flex flex-row'}`}>
+                <View style={[styles.champActions, isCompact && styles.actionsColumn]}>
                   <TouchableOpacity 
-                    className="px-4 py-2 rounded-xl bg-white/5"
-                    onPress={() => router.push(`/championships/${champ._id}/standings` as any)}
+                    style={styles.smallButton}
+                    onPress={() => router.push(`/championships/${champ._id}/tabla` as any)}
                   >
-                    <Text className="text-white">Tabla</Text>
+                    <Text style={styles.smallButtonText}>Tabla</Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
-                    className="px-4 py-2 rounded-xl bg-white/5"
-                    onPress={() => router.push(`/championships/${champ._id}/bracket` as any)}
+                    style={styles.smallButton}
+                    onPress={() => router.push(`/championships/${champ._id}/llaves` as any)}
                   >
-                    <Text className="text-white">Llaves</Text>
+                    <Text style={styles.smallButtonText}>Llaves</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -142,3 +140,163 @@ export default function Dashboard() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0b0b0d',
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#0b0b0d',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    paddingBottom: 36,
+  },
+  heroWrap: {
+    gap: 14,
+  },
+  pill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  pillText: {
+    color: '#e5e7eb',
+    fontSize: 11,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  title: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: '700',
+    marginTop: 12,
+  },
+  subtitle: {
+    color: 'rgba(255,255,255,0.72)',
+    marginTop: 8,
+    maxWidth: 620,
+  },
+  actionsRow: {
+    marginTop: 8,
+    flexDirection: 'row',
+    gap: 10,
+  },
+  actionsColumn: {
+    flexDirection: 'column',
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  secondaryButton: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
+    borderRadius: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+  },
+  secondaryButtonText: {
+    color: '#fff',
+  },
+  primaryButton: {
+    backgroundColor: '#c0162e',
+    borderRadius: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+  },
+  statsRow: {
+    marginTop: 28,
+    flexDirection: 'row',
+    gap: 12,
+  },
+  statCard: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    padding: 16,
+  },
+  flexCard: {
+    flex: 1,
+  },
+  statLabel: {
+    color: 'rgba(255,255,255,0.65)',
+    fontSize: 13,
+  },
+  statValue: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: '700',
+    marginTop: 8,
+  },
+  statHint: {
+    color: 'rgba(255,255,255,0.65)',
+    fontSize: 13,
+    marginTop: 8,
+  },
+  recentWrap: {
+    marginTop: 32,
+  },
+  recentTitle: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  recentList: {
+    marginTop: 14,
+  },
+  emptyCard: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    padding: 20,
+  },
+  emptyText: {
+    color: 'rgba(255,255,255,0.65)',
+  },
+  champCard: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    padding: 16,
+    marginBottom: 12,
+  },
+  champName: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  champMeta: {
+    color: 'rgba(255,255,255,0.65)',
+    fontSize: 13,
+    marginTop: 2,
+  },
+  champActions: {
+    marginTop: 12,
+    flexDirection: 'row',
+    gap: 10,
+  },
+  smallButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  smallButtonText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+});

@@ -1,7 +1,7 @@
 // app/(tabs)/_layout.tsx
 import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
-import { ActivityIndicator, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { useAuth } from "../../auth/_AuthProvider";
 
 export default function TabsLayout() {
@@ -12,7 +12,7 @@ export default function TabsLayout() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-ink items-center justify-center">
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#c0162e" />
       </View>
     );
@@ -24,8 +24,10 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerShown: true,
+        headerBackTitleVisible: false,
+        headerBackButtonDisplayMode: 'minimal',
         tabBarActiveTintColor: "#c0162e",
         tabBarInactiveTintColor: "#8b8b99",
         tabBarStyle: {
@@ -50,25 +52,33 @@ export default function TabsLayout() {
           fontWeight: '700',
           letterSpacing: 0.4,
         },
+        headerLeft: () => {
+          if (!navigation.canGoBack()) return null;
+          return (
+            <Pressable onPress={() => navigation.goBack()} style={styles.backButton}>
+              <Ionicons name="chevron-back" size={18} color="#fff" />
+            </Pressable>
+          );
+        },
         headerRight: () => (
-          <View className="flex flex-row items-center gap-3 mr-4">
+          <View style={styles.headerRightWrap}>
             {!isCompact && (
-              <View className="text-right mr-2">
-                <Text className="text-sm font-semibold text-white">{user.username}</Text>
-                <Text className="text-xs text-white/60">{isAdmin ? 'Administrador' : 'Entrenador'}</Text>
+              <View style={styles.userMeta}>
+                <Text style={styles.username}>{user.username}</Text>
+                <Text style={styles.role}>{isAdmin ? 'Administrador' : 'Entrenador'}</Text>
               </View>
             )}
             <TouchableOpacity
               onPress={async () => {
                 await logout();
               }}
-              className="px-3 py-2 rounded-xl border border-white/30"
+              style={styles.logoutButton}
             >
-              <Text className="text-white text-sm">Salir</Text>
+              <Text style={styles.logoutText}>Salir</Text>
             </TouchableOpacity>
           </View>
         ),
-      }}
+      })}
     >
       <Tabs.Screen
         name="index"
@@ -81,7 +91,7 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="teams"
+        name="equipos"
         options={{
           title: "Equipos",
           tabBarIcon: ({ color, size }) => (
@@ -91,7 +101,7 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="championships"
+        name="campeonatos"
         options={{
           title: "Campeonatos",
           tabBarIcon: ({ color, size }) => (
@@ -116,3 +126,50 @@ export default function TabsLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#0b0b0d',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    marginLeft: 12,
+  },
+  headerRightWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  userMeta: {
+    alignItems: 'flex-end',
+    marginRight: 8,
+  },
+  username: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  role: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 12,
+  },
+  logoutButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
+  },
+  logoutText: {
+    color: '#fff',
+    fontSize: 13,
+  },
+});

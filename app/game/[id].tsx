@@ -45,15 +45,12 @@ export default function GameDetail() {
 
   async function handleBuy() {
     try {
-      console.log("DEBUG: handleBuy called, id:", id);
-      
       if (!id) {
         Alert.alert("Error", "ID del juego no disponible");
         return;
       }
 
       const token = await getToken();
-      console.log("DEBUG: token from storage:", token);
 
       if (!token) {
         Alert.alert("Debes iniciar sesión", "Inicia sesión para comprar juegos.");
@@ -62,27 +59,16 @@ export default function GameDetail() {
       }
 
       const endpoint = `/purchases/${id}`;
-      console.log("DEBUG: haciendo POST a:", endpoint);
-      console.log("DEBUG: token enviado:", token);
 
       const res = await api.post(
         endpoint,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      console.log("DEBUG: respuesta compra:", res);
-      console.log("DEBUG: status:", res.status);
-      console.log("DEBUG: data:", res.data);
       
       Alert.alert("Éxito", `Compra iniciada para: ${game?.name || 'juego'}. Estado: ${res.data?.status}`);
       router.push("/cart");
     } catch (error: any) {
-      console.log("DEBUG: error en handleBuy (raw):", JSON.stringify(error, null, 2));
-      console.log("DEBUG: error.response:", error?.response);
-      console.log("DEBUG: error.response?.data:", error?.response?.data);
-      console.log("DEBUG: error.message:", error?.message);
-
       const errorMsg = error?.response?.data?.msg || error?.response?.data?.message;
       const statusCode = error?.response?.status;
 

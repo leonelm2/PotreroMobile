@@ -2,7 +2,7 @@
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
-import api from "../app/api/api";
+import api from "./api/api";
 import GameCard from "../components/GameCard";
 
 interface Game {

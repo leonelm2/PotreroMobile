@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from '../../api/client';
 
 export default function Disciplines() {
@@ -65,92 +65,90 @@ export default function Disciplines() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-ink items-center justify-center">
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#c0162e" />
       </View>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-ink">
-      <View className="max-w-6xl px-6 py-8">
-        <View className="flex flex-col gap-2">
-          <View className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 self-start">
-            <Text className="text-white/80 text-xs uppercase tracking-widest">Gestión central</Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.headerWrap}>
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>Gestión central</Text>
           </View>
-          <Text className="text-3xl tracking-wide text-white font-bold">Disciplinas deportivas</Text>
-          <Text className="text-white/60 max-w-2xl">Define el catálogo de deportes disponibles para los campeonatos.</Text>
+          <Text style={styles.title}>Disciplinas deportivas</Text>
+          <Text style={styles.subtitle}>Define el catálogo de deportes disponibles para los campeonatos.</Text>
         </View>
 
-        <View className="mt-8">
-          {/* Form Card */}
-          <View className="rounded-2xl border border-white/10 bg-white/5 p-6 mb-6">
-            <Text className="text-2xl text-white font-bold mb-4">{editing ? 'Editar disciplina' : 'Nueva disciplina'}</Text>
+        <View style={styles.mainWrap}>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{editing ? 'Editar disciplina' : 'Nueva disciplina'}</Text>
             
             <TextInput
               value={form.name}
               onChangeText={(text) => setForm({ ...form, name: text })}
               placeholder="Nombre de la disciplina"
-              placeholderTextColor="#8b8b99"
-              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mb-4"
+              placeholderTextColor="#a3a3a3"
+              style={styles.input}
             />
             
             <TextInput
               value={form.description}
               onChangeText={(text) => setForm({ ...form, description: text })}
               placeholder="Descripción breve"
-              placeholderTextColor="#8b8b99"
+              placeholderTextColor="#a3a3a3"
               multiline
               numberOfLines={4}
-              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mb-4 min-h-[100px]"
+              style={[styles.input, styles.descriptionInput]}
             />
             
-            {error ? <Text className="text-red-400 text-sm mb-2">{error}</Text> : null}
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
             
-            <View className="flex flex-row gap-3">
-              <TouchableOpacity className="flex-1 px-5 py-2.5 rounded-xl bg-ember" onPress={submit}>
-                <Text className="text-white font-semibold text-center">Guardar</Text>
+            <View style={styles.row}>
+              <TouchableOpacity style={[styles.primaryButton, styles.flexOne]} onPress={submit}>
+                <Text style={styles.primaryButtonText}>Guardar</Text>
               </TouchableOpacity>
               {editing && (
                 <TouchableOpacity
-                  className="flex-1 px-5 py-2.5 rounded-xl border border-white/30"
+                  style={[styles.secondaryButton, styles.flexOne]}
                   onPress={() => {
                     setEditing(null);
                     setForm({ name: '', description: '' });
                   }}
                 >
-                  <Text className="text-white text-center">Cancelar</Text>
+                  <Text style={styles.secondaryButtonText}>Cancelar</Text>
                 </TouchableOpacity>
               )}
             </View>
           </View>
 
-          {/* Disciplines List */}
           {disciplines.length === 0 && (
-            <View className="rounded-2xl border border-white/10 bg-white/5 p-6">
-              <Text className="text-white/60">No hay disciplinas registradas.</Text>
+            <View style={styles.card}>
+              <Text style={styles.mutedText}>No hay disciplinas registradas.</Text>
             </View>
           )}
           
           {disciplines.map(discipline => (
-            <View key={discipline._id} className="rounded-2xl border border-white/10 bg-white/5 p-5 mb-4">
-              <View className="flex flex-row items-center justify-between">
-                <View className="flex-1">
-                  <Text className="text-xl text-white font-semibold">{discipline.name}</Text>
-                  <Text className="text-sm text-white/60">{discipline.description || 'Sin descripción'}</Text>
+            <View key={discipline._id} style={styles.listCard}>
+              <View style={styles.listRow}>
+                <View style={styles.flexOne}>
+                  <Text style={styles.listTitle}>{discipline.name}</Text>
+                  <Text style={styles.listMeta}>{discipline.description || 'Sin descripción'}</Text>
                 </View>
-                <View className="flex flex-row gap-2">
+                <View style={styles.row}>
                   <TouchableOpacity
-                    className="px-4 py-2 rounded-xl bg-white/5"
+                    style={styles.smallButton}
                     onPress={() => startEdit(discipline)}
                   >
-                    <Text className="text-white">Editar</Text>
+                    <Text style={styles.smallButtonText}>Editar</Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
-                    className="px-4 py-2 rounded-xl border border-white/30"
+                    style={styles.secondarySmallButton}
                     onPress={() => remove(discipline._id)}
                   >
-                    <Text className="text-white">Eliminar</Text>
+                    <Text style={styles.smallButtonText}>Eliminar</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -161,3 +159,151 @@ export default function Disciplines() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0b0b0d',
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#0b0b0d',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    paddingBottom: 34,
+  },
+  headerWrap: {
+    gap: 6,
+  },
+  pill: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  pillText: {
+    color: '#e5e7eb',
+    fontSize: 11,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  title: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: '700',
+    marginTop: 8,
+  },
+  subtitle: {
+    color: 'rgba(255,255,255,0.65)',
+  },
+  mainWrap: {
+    marginTop: 22,
+    gap: 12,
+  },
+  card: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    padding: 14,
+  },
+  cardTitle: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  input: {
+    backgroundColor: '#1f1f1f',
+    borderColor: 'rgba(255,255,255,0.12)',
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    color: '#fff',
+    marginBottom: 10,
+  },
+  descriptionInput: {
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  errorText: {
+    color: '#f87171',
+    marginBottom: 8,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  flexOne: {
+    flex: 1,
+  },
+  primaryButton: {
+    backgroundColor: '#c0162e',
+    borderRadius: 12,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+  },
+  secondaryButton: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
+    borderRadius: 12,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  secondaryButtonText: {
+    color: '#fff',
+  },
+  mutedText: {
+    color: 'rgba(255,255,255,0.65)',
+  },
+  listCard: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    padding: 14,
+  },
+  listRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  listTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  listMeta: {
+    color: 'rgba(255,255,255,0.65)',
+    fontSize: 13,
+    marginTop: 3,
+  },
+  smallButton: {
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  secondarySmallButton: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  smallButtonText: {
+    color: '#fff',
+    fontSize: 13,
+  },
+});

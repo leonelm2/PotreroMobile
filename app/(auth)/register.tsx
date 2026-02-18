@@ -1,6 +1,15 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import { useAuth } from '../../auth/_AuthProvider';
 
 export default function Register() {
@@ -21,25 +30,25 @@ export default function Register() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-ink"
+      style={styles.container}
     >
-      <ScrollView className="flex-1 bg-ink" keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 items-center justify-center px-6 py-12">
-          <View className="rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-8 w-full max-w-md">
-            <View className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 self-start">
-              <Text className="text-white/80 text-xs uppercase tracking-widest">Registro</Text>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.scrollContent}>
+        <View style={styles.centerWrap}>
+          <View style={styles.card}>
+            <View style={styles.pill}>
+              <Text style={styles.pillText}>Registro</Text>
             </View>
 
-            <Text className="text-4xl tracking-wide text-white mt-3 font-bold">Crear cuenta</Text>
-            <Text className="text-white/60 text-sm">Registrate como entrenador para gestionar tus equipos.</Text>
+            <Text style={styles.title}>Crear cuenta</Text>
+            <Text style={styles.subtitle}>Registrate como entrenador para gestionar tus equipos.</Text>
 
-            <View className="mt-6">
+            <View style={styles.formWrap}>
             <TextInput
               value={form.username}
               onChangeText={(text) => setForm({ ...form, username: text })}
               placeholder="Usuario"
-              placeholderTextColor="#8b8b99"
-              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10"
+              placeholderTextColor="#a3a3a3"
+              style={[styles.input, styles.inputSpacing]}
               autoCapitalize="none"
             />
             
@@ -47,31 +56,31 @@ export default function Register() {
               value={form.email}
               onChangeText={(text) => setForm({ ...form, email: text })}
               placeholder="Email"
-              placeholderTextColor="#8b8b99"
+              placeholderTextColor="#a3a3a3"
               keyboardType="email-address"
               autoCapitalize="none"
-              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mt-4"
+              style={[styles.input, styles.inputSpacing]}
             />
             
             <TextInput
               value={form.password}
               onChangeText={(text) => setForm({ ...form, password: text })}
               placeholder="Contrasena"
-              placeholderTextColor="#8b8b99"
+              placeholderTextColor="#a3a3a3"
               secureTextEntry
-              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mt-4"
+              style={[styles.input, styles.inputSpacing]}
               onSubmitEditing={submit}
             />
             
             {error ? (
-              <Text className="text-red-400 text-sm mt-2">{error}</Text>
+              <Text style={styles.errorText}>{error}</Text>
             ) : null}
             
             <TouchableOpacity 
               onPress={submit}
-              className="w-full px-5 py-3 rounded-xl bg-red-600 mt-4"
+              style={styles.primaryButton}
             >
-              <Text className="text-white font-semibold text-center">Crear cuenta</Text>
+              <Text style={styles.primaryButtonText}>Crear cuenta</Text>
             </TouchableOpacity>
             </View>
           </View>
@@ -80,3 +89,85 @@ export default function Register() {
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0a0a0a',
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  centerWrap: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 460,
+    backgroundColor: '#111111',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
+    borderRadius: 16,
+    padding: 24,
+  },
+  pill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  pillText: {
+    color: '#fff',
+    fontSize: 11,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  title: {
+    color: '#fff',
+    fontSize: 32,
+    fontWeight: '700',
+    marginTop: 12,
+  },
+  subtitle: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
+    marginTop: 6,
+  },
+  formWrap: {
+    marginTop: 20,
+  },
+  input: {
+    backgroundColor: '#1f1f1f',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
+    borderRadius: 12,
+    color: '#fff',
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  inputSpacing: {
+    marginTop: 12,
+  },
+  errorText: {
+    color: '#f87171',
+    marginTop: 8,
+    fontSize: 13,
+  },
+  primaryButton: {
+    marginTop: 14,
+    backgroundColor: '#e11d1d',
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 15,
+  },
+});
