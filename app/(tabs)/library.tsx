@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, TouchableOpacity, Dimensions } from "react-native";
-import api from "../api/api";
-import { getToken } from "../auth/_authStore";
 import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { getToken } from "../../auth/_authStore";
+import api from "../api/api";
 
 interface PurchasedGame {
   _id: string;

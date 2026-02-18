@@ -1,8 +1,8 @@
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import api from "../../api/client";
-import { useAuth } from "../auth/_AuthProvider";
+import { useAuth } from "../../auth/_AuthProvider";
 
 interface Championship {
   _id: string;
@@ -19,6 +19,8 @@ export default function Dashboard() {
   const [stats, setStats] = useState({ disciplines: 0, teams: 0, championships: 0 });
   const [championships, setChampionships] = useState<Championship[]>([]);
   const [loading, setLoading] = useState(true);
+  const { width } = useWindowDimensions();
+  const isCompact = width < 768;
   const router = useRouter();
 
   useEffect(() => {
@@ -66,17 +68,17 @@ export default function Dashboard() {
               Administra disciplinas, equipos y campeonatos desde un mismo lugar. Lleva los resultados al instante.
             </Text>
           </View>
-          <View className="flex flex-row gap-3 mt-2">
+          <View className={`gap-3 mt-2 ${isCompact ? 'flex flex-col' : 'flex flex-row'}`}>
             <TouchableOpacity 
               onPress={() => router.push('/(tabs)/teams')}
-              className="px-5 py-2.5 rounded-xl border border-white/30"
+              className={`px-5 py-3 rounded-xl border border-white/30 ${isCompact ? 'w-full' : ''}`}
             >
               <Text className="text-white">Ver equipos</Text>
             </TouchableOpacity>
             {isAdmin && (
               <TouchableOpacity 
                 onPress={() => router.push('/(tabs)/championships')}
-                className="px-5 py-2.5 rounded-xl bg-ember"
+                className={`px-5 py-3 rounded-xl bg-ember ${isCompact ? 'w-full' : ''}`}
               >
                 <Text className="text-white font-semibold">Nuevo campeonato</Text>
               </TouchableOpacity>
@@ -85,23 +87,22 @@ export default function Dashboard() {
         </View>
 
         {/* Statistics Cards */}
-        <View className="flex flex-row gap-4 mt-8">
-          <View className="flex-1 rounded-2xl border border-white/10 bg-white/5 shadow-lg p-5">
+        <View className={`gap-4 mt-8 ${isCompact ? 'flex flex-col' : 'flex flex-row'}`}>
+          <View className={`rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5 ${isCompact ? '' : 'flex-1'}`}>
             <Text className="text-sm text-white/60">Disciplinas</Text>
             <Text className="text-3xl mt-2 font-bold text-white">{stats.disciplines}</Text>
             <Text className="text-white/60 text-sm mt-2">Control total de deportes y formatos.</Text>
           </View>
-          <View className="flex-1 rounded-2xl border border-white/10 bg-white/5 shadow-lg p-5">
+          <View className={`rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5 ${isCompact ? '' : 'flex-1'}`}>
             <Text className="text-sm text-white/60">Equipos</Text>
             <Text className="text-3xl mt-2 font-bold text-white">{stats.teams}</Text>
             <Text className="text-white/60 text-sm mt-2">Registro de planteles y entrenadores.</Text>
           </View>
-        </View>
-
-        <View className="rounded-2xl border border-white/10 bg-white/5 shadow-lg p-5 mt-4">
-          <Text className="text-sm text-white/60">Campeonatos</Text>
-          <Text className="text-3xl mt-2 font-bold text-white">{stats.championships}</Text>
-          <Text className="text-white/60 text-sm mt-2">Competencias activas y en planificación.</Text>
+          <View className={`rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5 ${isCompact ? '' : 'flex-1'}`}>
+            <Text className="text-sm text-white/60">Campeonatos</Text>
+            <Text className="text-3xl mt-2 font-bold text-white">{stats.championships}</Text>
+            <Text className="text-white/60 text-sm mt-2">Competencias activas y en planificación.</Text>
+          </View>
         </View>
 
         {/* Recent Championships */}
@@ -114,12 +115,12 @@ export default function Dashboard() {
               </View>
             )}
             {championships.map((champ) => (
-              <View key={champ._id} className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col mb-4">
+              <View key={champ._id} className="rounded-2xl border border-white/10 bg-white/5 shadow-lg shadow-black/20 p-5 flex flex-col mb-4">
                 <View>
                   <Text className="text-xl text-white">{champ.name}</Text>
                   <Text className="text-sm text-white/60">{champ.discipline?.name} · Estado: {champ.status}</Text>
                 </View>
-                <View className="flex flex-row gap-3 mt-3">
+                <View className={`gap-3 mt-3 ${isCompact ? 'flex flex-col' : 'flex flex-row'}`}>
                   <TouchableOpacity 
                     className="px-4 py-2 rounded-xl bg-white/5"
                     onPress={() => router.push(`/championships/${champ._id}/standings` as any)}

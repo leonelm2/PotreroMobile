@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from "react-native";
-import api from "./api/api";
-import { getToken } from "./auth/_authStore";
 import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { getToken } from "../auth/_authStore";
+import api from "./api/api";
 
 interface Order {
   _id: string;

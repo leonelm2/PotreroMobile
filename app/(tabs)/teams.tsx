@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from '../../api/client';
-import { useAuth } from '../auth/_AuthProvider';
+import { useAuth } from '../../auth/_AuthProvider';
 
 export default function Teams() {
   const { user } = useAuth();
@@ -12,6 +12,8 @@ export default function Teams() {
   const [editing, setEditing] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [players, setPlayers] = useState<any[]>([]);
+  const [playerForm, setPlayerForm] = useState({ name: '', team: '', number: '', position: '', age: '' });
+  const [playerError, setPlayerError] = useState('');
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
@@ -69,6 +71,17 @@ export default function Teams() {
     );
   };
 
+  const addPlayer = async () => {
+    setPlayerError('');
+    try {
+      await api.post('/players', playerForm);
+      setPlayerForm({ name: '', team: '', number: '', position: '', age: '' });
+      load();
+    } catch (err: any) {
+      setPlayerError(err.response?.data?.msg || 'Error al agregar jugador');
+    }
+  };
+
   const playersByTeam = players.reduce((acc: any, player: any) => {
     const teamId = player.team?._id || player.team;
     if (!teamId) return acc;
@@ -108,62 +121,129 @@ export default function Teams() {
         </View>
 
         <View className="mt-8">
-          {/* Form Card */}
-          <View className="rounded-2xl border border-white/10 bg-white/5 p-6 mb-6">
-            <Text className="text-2xl text-white font-bold mb-4">{editing ? 'Editar equipo' : 'Nuevo equipo'}</Text>
-            
-            <TextInput
-              value={form.name}
-              onChangeText={(text) => setForm({ ...form, name: text })}
-              placeholder="Nombre del equipo"
-              placeholderTextColor="#8b8b99"
-              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mb-4"
-            />
-            
-            <View className="mb-4">
-              <Text className="text-white/70 text-sm mb-2">Selecciona disciplina</Text>
-              {disciplines.map(d => (
-                <TouchableOpacity
-                  key={d._id}
-                  onPress={() => setForm({ ...form, discipline: d._id })}
-                  className={`p-3 rounded-xl border mb-2 ${
-                    form.discipline === d._id 
-                      ? 'bg-ember/20 border-ember' 
-                      : 'bg-neutral-900/70 border-white/10'
-                  }`}
-                >
-                  <Text className={form.discipline === d._id ? 'text-white font-semibold' : 'text-white/70'}>
-                    {d.name}
-                  </Text>
+          <View className="flex flex-col gap-6 mb-6">
+            <View className="rounded-2xl border border-white/10 bg-white/5 p-6">
+              <Text className="text-2xl text-white font-bold mb-4">{editing ? 'Editar equipo' : 'Nuevo equipo'}</Text>
+
+              <TextInput
+                value={form.name}
+                onChangeText={(text) => setForm({ ...form, name: text })}
+                placeholder="Nombre del equipo"
+                placeholderTextColor="#8b8b99"
+                className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mb-4"
+              />
+
+              <View className="mb-4">
+                <Text className="text-white/70 text-sm mb-2">Selecciona disciplina</Text>
+                {disciplines.map(d => (
+                  <TouchableOpacity
+                    key={d._id}
+                    onPress={() => setForm({ ...form, discipline: d._id })}
+                    className={`p-3 rounded-xl border mb-2 ${
+                      form.discipline === d._id
+                        ? 'bg-ember/20 border-ember'
+                        : 'bg-neutral-900/70 border-white/10'
+                    }`}
+                  >
+                    <Text className={form.discipline === d._id ? 'text-white font-semibold' : 'text-white/70'}>
+                      {d.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <TextInput
+                value={form.logoUrl}
+                onChangeText={(text) => setForm({ ...form, logoUrl: text })}
+                placeholder="URL del logo (opcional)"
+                placeholderTextColor="#8b8b99"
+                className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mb-4"
+              />
+
+              {error ? <Text className="text-red-400 text-sm mb-2">{error}</Text> : null}
+
+              <View className="flex flex-row gap-3">
+                <TouchableOpacity className="flex-1 px-5 py-2.5 rounded-xl bg-ember" onPress={submit}>
+                  <Text className="text-white font-semibold text-center">Guardar</Text>
                 </TouchableOpacity>
-              ))}
+                {editing && (
+                  <TouchableOpacity
+                    className="flex-1 px-5 py-2.5 rounded-xl border border-white/30"
+                    onPress={() => {
+                      setEditing(null);
+                      setForm({ name: '', discipline: '', logoUrl: '' });
+                    }}
+                  >
+                    <Text className="text-white text-center">Cancelar</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
 
-            <TextInput
-              value={form.logoUrl}
-              onChangeText={(text) => setForm({ ...form, logoUrl: text })}
-              placeholder="URL del logo (opcional)"
-              placeholderTextColor="#8b8b99"
-              className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mb-4"
-            />
-            
-            {error ? <Text className="text-red-400 text-sm mb-2">{error}</Text> : null}
-            
-            <View className="flex flex-row gap-3">
-              <TouchableOpacity className="flex-1 px-5 py-2.5 rounded-xl bg-ember" onPress={submit}>
-                <Text className="text-white font-semibold text-center">Guardar</Text>
+            <View className="rounded-2xl border border-white/10 bg-white/5 p-6">
+              <Text className="text-2xl text-white font-bold mb-4">Agregar jugador</Text>
+
+              <TextInput
+                value={playerForm.name}
+                onChangeText={(text) => setPlayerForm({ ...playerForm, name: text })}
+                placeholder="Nombre del jugador"
+                placeholderTextColor="#8b8b99"
+                className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mb-4"
+              />
+
+              <View className="mb-4">
+                <Text className="text-white/70 text-sm mb-2">Selecciona equipo</Text>
+                {teams.map(team => (
+                  <TouchableOpacity
+                    key={team._id}
+                    onPress={() => setPlayerForm({ ...playerForm, team: team._id })}
+                    className={`p-3 rounded-xl border mb-2 ${
+                      playerForm.team === team._id
+                        ? 'bg-ember/20 border-ember'
+                        : 'bg-neutral-900/70 border-white/10'
+                    }`}
+                  >
+                    <Text className={playerForm.team === team._id ? 'text-white font-semibold' : 'text-white/70'}>
+                      {team.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <View className="flex flex-row gap-3 mb-4">
+                <TextInput
+                  value={playerForm.number}
+                  onChangeText={(text) => setPlayerForm({ ...playerForm, number: text })}
+                  placeholder="Número"
+                  placeholderTextColor="#8b8b99"
+                  keyboardType="number-pad"
+                  className="flex-1 p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10"
+                />
+                <View className="flex-1">
+                  <TextInput
+                    value={playerForm.age}
+                    onChangeText={(text) => setPlayerForm({ ...playerForm, age: text })}
+                    placeholder="Edad"
+                    placeholderTextColor="#8b8b99"
+                    keyboardType="number-pad"
+                    className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10"
+                  />
+                </View>
+              </View>
+
+              <TextInput
+                value={playerForm.position}
+                onChangeText={(text) => setPlayerForm({ ...playerForm, position: text })}
+                placeholder="Posición"
+                placeholderTextColor="#8b8b99"
+                className="w-full p-3 rounded-xl bg-neutral-900/70 text-white border border-white/10 mb-4"
+              />
+
+              {playerError ? <Text className="text-red-400 text-sm mb-2">{playerError}</Text> : null}
+
+              <TouchableOpacity className="px-5 py-2.5 rounded-xl bg-ember" onPress={addPlayer}>
+                <Text className="text-white font-semibold text-center">Agregar jugador</Text>
               </TouchableOpacity>
-              {editing && (
-                <TouchableOpacity
-                  className="flex-1 px-5 py-2.5 rounded-xl border border-white/30"
-                  onPress={() => {
-                    setEditing(null);
-                    setForm({ name: '', discipline: '', logoUrl: '' });
-                  }}
-                >
-                  <Text className="text-white text-center">Cancelar</Text>
-                </TouchableOpacity>
-              )}
             </View>
           </View>
 

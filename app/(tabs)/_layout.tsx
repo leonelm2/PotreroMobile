@@ -1,18 +1,25 @@
 // app/(tabs)/_layout.tsx
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs, useRouter } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
-import { useAuth } from "../auth/_AuthProvider";
+import { Redirect, Tabs } from "expo-router";
+import { ActivityIndicator, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { useAuth } from "../../auth/_AuthProvider";
 
 export default function TabsLayout() {
-  const { user, logout } = useAuth();
-  const router = useRouter();
+  const { user, logout, loading } = useAuth();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 390;
   const isAdmin = user?.role === 'admin' || user?.isAdmin;
 
-  // Si no hay usuario, redirigir al login
+  if (loading) {
+    return (
+      <View className="flex-1 bg-ink items-center justify-center">
+        <ActivityIndicator size="large" color="#c0162e" />
+      </View>
+    );
+  }
+
   if (!user) {
-    router.replace('/(auth)/login');
-    return null;
+    return <Redirect href="/(auth)/login" />;
   }
 
   return (
@@ -25,6 +32,12 @@ export default function TabsLayout() {
           backgroundColor: "#0b0b0d",
           borderTopColor: "rgba(255,255,255,0.1)",
           borderTopWidth: 1,
+          height: isCompact ? 64 : 72,
+          paddingTop: 6,
+        },
+        tabBarLabelStyle: {
+          fontSize: isCompact ? 11 : 12,
+          paddingBottom: isCompact ? 2 : 4,
         },
         headerStyle: {
           backgroundColor: "#0b0b0d",
@@ -32,18 +45,24 @@ export default function TabsLayout() {
           borderBottomWidth: 1,
         },
         headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontSize: 18,
+          fontWeight: '700',
+          letterSpacing: 0.4,
+        },
         headerRight: () => (
           <View className="flex flex-row items-center gap-3 mr-4">
-            <View className="text-right mr-2">
-              <Text className="text-sm font-semibold text-white">{user.username}</Text>
-              <Text className="text-xs text-white/60">{isAdmin ? 'Administrador' : 'Entrenador'}</Text>
-            </View>
+            {!isCompact && (
+              <View className="text-right mr-2">
+                <Text className="text-sm font-semibold text-white">{user.username}</Text>
+                <Text className="text-xs text-white/60">{isAdmin ? 'Administrador' : 'Entrenador'}</Text>
+              </View>
+            )}
             <TouchableOpacity
               onPress={async () => {
                 await logout();
-                router.replace('/(auth)/login');
               }}
-              className="px-4 py-2 rounded-xl border border-white/30"
+              className="px-3 py-2 rounded-xl border border-white/30"
             >
               <Text className="text-white text-sm">Salir</Text>
             </TouchableOpacity>

@@ -1,9 +1,9 @@
 // app/game/[id].tsx
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState, useRef } from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { getToken } from "../../auth/_authStore";
 import api from "../api/api";
-import { getToken } from "../auth/_authStore";
 
 interface Game {
   _id: string;

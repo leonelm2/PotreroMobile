@@ -1,8 +1,8 @@
+import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from '../../api/client';
-import { useAuth } from '../auth/_AuthProvider';
+import { useAuth } from '../../auth/_AuthProvider';
 
 export default function Championships() {
   const { user } = useAuth();
