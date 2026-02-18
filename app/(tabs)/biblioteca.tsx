@@ -4,7 +4,7 @@ import { ActivityIndicator, Dimensions, FlatList, Image, StyleSheet, Text, Touch
 import { getToken } from "../../auth/_authStore";
 import api from "../api/api";
 
-interface PurchasedGame {
+interface JuegoComprado {
   _id: string;
   name: string;
   price: number;
@@ -17,33 +17,33 @@ const numCols = 2;
 const screenW = Dimensions.get("window").width;
 const itemW = (screenW - 48) / numCols;
 
-export default function LibraryScreen() {
-  const [games, setGames] = useState<PurchasedGame[]>([]);
+export default function BibliotecaScreen() {
+  const [juegos, setJuegos] = useState<JuegoComprado[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    loadLibrary();
+    cargarBiblioteca();
   }, []);
 
-  const loadLibrary = async () => {
+  const cargarBiblioteca = async () => {
     try {
       setLoading(true);
       const token = await getToken();
 
       if (!token) {
-        setGames([]);
+        setJuegos([]);
         return;
       }
 
-      const res = await api.get("/purchases/library/me", {
+      const res = await api.get("/compras/biblioteca/yo", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setGames(res.data || []);
+      setJuegos(res.data || []);
     } catch (error: any) {
       console.error("Error cargando biblioteca:", error?.response?.data || error.message);
-      setGames([]);
+      setJuegos([]);
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ export default function LibraryScreen() {
     );
   }
 
-  if (games.length === 0) {
+  if (juegos.length === 0) {
     return (
       <View style={styles.container}>
         <View style={styles.emptyContainer}>
@@ -79,11 +79,11 @@ export default function LibraryScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Mi Biblioteca</Text>
       <Text style={styles.subtitle}>
-        {games.length} juego{games.length > 1 ? "s" : ""} comprado{games.length > 1 ? "s" : ""}
+        {juegos.length} juego{juegos.length > 1 ? "s" : ""} comprado{juegos.length > 1 ? "s" : ""}
       </Text>
 
       <FlatList
-        data={games}
+        data={juegos}
         keyExtractor={(item) => item._id}
         numColumns={numCols}
         columnWrapperStyle={{

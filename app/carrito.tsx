@@ -27,7 +27,7 @@ interface PaymentForm {
   address: string;
 }
 
-export default function Cart() {
+export default function Carrito() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +57,7 @@ export default function Cart() {
         return;
       }
 
-      const res = await api.get("/purchases", {
+      const res = await api.get("/compras", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -123,7 +123,7 @@ export default function Cart() {
         const order = orders[i];
 
         const response = await api.post(
-          `/purchases/${order._id}/pay`,
+          `/compras/${order._id}/pagar`,
           {
             cardHolder: formData.cardHolder,
             cardNumber: formData.cardNumber,
@@ -140,7 +140,7 @@ export default function Cart() {
       
       // Redirigir después de 2 segundos
       setTimeout(() => {
-        router.push("/(tabs)/library");
+        router.push("/(tabs)/biblioteca");
       }, 2000);
     } catch (error: any) {
       setProcessing(false);

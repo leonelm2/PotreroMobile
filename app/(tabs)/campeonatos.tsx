@@ -4,7 +4,7 @@ import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, Touc
 import api from '../../api/client';
 import { useAuth } from '../../auth/_AuthProvider';
 
-export default function Championships() {
+export default function Campeonatos() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin' || user?.isAdmin;
   const [disciplines, setDisciplines] = useState<any[]>([]);
@@ -25,9 +25,9 @@ export default function Championships() {
   const load = async () => {
     try {
       const [disc, team, champ] = await Promise.all([
-        api.get('/disciplines'),
-        api.get('/teams'),
-        api.get('/championships')
+        api.get('/disciplinas'),
+        api.get('/equipos'),
+        api.get('/campeonatos')
       ]);
       setDisciplines(disc.data);
       setTeams(team.data);
@@ -59,9 +59,9 @@ export default function Championships() {
     setError('');
     try {
       if (editingId) {
-        await api.put(`/championships/${editingId}`, form);
+        await api.put(`/campeonatos/${editingId}`, form);
       } else {
-        await api.post('/championships', form);
+        await api.post('/campeonatos', form);
       }
       setForm({ name: '', discipline: '', teams: [], groupCount: 2, qualifiersPerGroup: 2 });
       setEditingId(null);
@@ -72,18 +72,18 @@ export default function Championships() {
   };
 
   const generateGroups = async (id: string) => {
-    await api.post(`/championships/${id}/generate-groups`);
+    await api.post(`/campeonatos/${id}/generar-grupos`);
     load();
   };
 
   const generateBracket = async (id: string) => {
-    await api.post(`/championships/${id}/generate-bracket`);
+    await api.post(`/campeonatos/${id}/generar-llaves`);
     load();
   };
 
   const advanceBracket = async (id: string) => {
     try {
-      await api.post(`/championships/${id}/advance-knockout`);
+      await api.post(`/campeonatos/${id}/avanzar-eliminatoria`);
       load();
     } catch (err: any) {
       Alert.alert('Error', err.response?.data?.msg || 'No se pudo avanzar la llave');
@@ -111,7 +111,7 @@ export default function Championships() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
-            await api.delete(`/championships/${id}`);
+            await api.delete(`/campeonatos/${id}`);
             load();
           }
         }
@@ -120,7 +120,7 @@ export default function Championships() {
   };
 
   const finalizeChampionship = async (id: string) => {
-    await api.put(`/championships/${id}`, { status: 'completed' });
+    await api.put(`/campeonatos/${id}`, { status: 'completed' });
     load();
   };
 
@@ -298,19 +298,19 @@ export default function Championships() {
                 )}
                 <TouchableOpacity 
                   style={styles.secondarySmallButton}
-                  onPress={() => router.push(`/championships/${champ._id}/equipos` as any)}
+                  onPress={() => router.push(`/campeonatos/${champ._id}/equipos` as any)}
                 >
                   <Text style={styles.smallButtonText}>Ver equipos</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                   style={styles.secondarySmallButton}
-                  onPress={() => router.push(`/championships/${champ._id}/tabla` as any)}
+                  onPress={() => router.push(`/campeonatos/${champ._id}/tabla` as any)}
                 >
                   <Text style={styles.smallButtonText}>Ver tabla</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                   style={styles.secondarySmallButton}
-                  onPress={() => router.push(`/championships/${champ._id}/llaves` as any)}
+                  onPress={() => router.push(`/campeonatos/${champ._id}/llaves` as any)}
                 >
                   <Text style={styles.smallButtonText}>Ver llaves</Text>
                 </TouchableOpacity>

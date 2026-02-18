@@ -83,7 +83,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Dashboard",
+          title: "Inicio",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="grid-outline" size={size} color={color} />
           ),
@@ -112,13 +112,13 @@ export default function TabsLayout() {
 
       {/* Ocultar otras pantallas del tab bar */}
       <Tabs.Screen
-        name="library"
+        name="biblioteca"
         options={{
           href: null, // Ocultar del tab bar
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="perfil"
         options={{
           href: null, // Ocultar del tab bar
         }}

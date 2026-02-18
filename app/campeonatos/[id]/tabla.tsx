@@ -50,9 +50,9 @@ export default function StandingsScreen() {
     if (!id) return;
     try {
       const [champ, table, matchRes] = await Promise.all([
-        api.get(`/championships/${id}`),
-        api.get(`/championships/${id}/standings`),
-        api.get('/matches', { params: { championship: id, phase: 'group' } })
+        api.get(`/campeonatos/${id}`),
+        api.get(`/campeonatos/${id}/tabla`),
+        api.get('/partidos', { params: { championship: id, phase: 'group' } })
       ]);
       setChampionship(champ.data);
       setStandings(table.data.standings || []);
@@ -91,7 +91,7 @@ export default function StandingsScreen() {
     const payload = editing[matchId];
     if (!payload) return;
     try {
-      await api.put(`/matches/${matchId}/result`, payload);
+      await api.put(`/partidos/${matchId}/resultado`, payload);
       setEditing((prev) => {
         const next = { ...prev };
         delete next[matchId];

@@ -1,11 +1,11 @@
-// app/(tabs)/games.tsx
+// app/juegos.tsx
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import GameCard from "../components/GameCard";
 import api from "./api/api";
 
-interface Game {
+interface Juego {
   _id: string;
   [key: string]: unknown;
 }
@@ -14,20 +14,20 @@ const numCols = 2;
 const screenW = Dimensions.get("window").width;
 const itemW = (screenW - 48) / numCols;
 
-export default function Games() {
-  const [games, setGames] = useState<Game[]>([]);
+export default function Juegos() {
+  const [juegos, setJuegos] = useState<Juego[]>([]);
 
   useEffect(() => {
     api
-      .get("/games")
-      .then((res) => setGames(res.data))
+      .get("/juegos")
+      .then((res) => setJuegos(res.data))
       .catch(console.log);
   }, []);
 
   return (
     <View style={styles.page}>
       <FlatList
-        data={games}
+        data={juegos}
         keyExtractor={(item) => item._id}
         numColumns={numCols}
         columnWrapperStyle={{
@@ -38,8 +38,8 @@ export default function Games() {
           <View style={{ width: itemW }}>
             <GameCard
               game={item}
-              onPress={() => router.push(`/game/${item._id}`)}
-              onBuy={() => router.push(`/cart?add=${item._id}`)}
+              onPress={() => router.push(`/juego/${item._id}` as any)}
+              onBuy={() => router.push(`/carrito?add=${item._id}`)}
             />
           </View>
         )}

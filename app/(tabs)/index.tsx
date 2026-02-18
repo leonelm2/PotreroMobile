@@ -30,9 +30,9 @@ export default function Dashboard() {
   const loadData = async () => {
     try {
       const [disc, team, champ] = await Promise.all([
-        api.get('/disciplines'),
-        api.get('/teams'),
-        api.get('/championships')
+        api.get('/disciplinas'),
+        api.get('/equipos'),
+        api.get('/campeonatos')
       ]);
       setStats({
         disciplines: disc.data.length,
@@ -121,13 +121,13 @@ export default function Dashboard() {
                 <View style={[styles.champActions, isCompact && styles.actionsColumn]}>
                   <TouchableOpacity 
                     style={styles.smallButton}
-                    onPress={() => router.push(`/championships/${champ._id}/tabla` as any)}
+                    onPress={() => router.push(`/campeonatos/${champ._id}/tabla` as any)}
                   >
                     <Text style={styles.smallButtonText}>Tabla</Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
                     style={styles.smallButton}
-                    onPress={() => router.push(`/championships/${champ._id}/llaves` as any)}
+                    onPress={() => router.push(`/campeonatos/${champ._id}/llaves` as any)}
                   >
                     <Text style={styles.smallButtonText}>Llaves</Text>
                   </TouchableOpacity>

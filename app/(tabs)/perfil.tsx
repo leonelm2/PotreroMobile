@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getToken, logout } from "../../auth/_authStore";
 
-export default function ProfileScreen() {
+export default function PerfilScreen() {
   const router = useRouter();
   const [isLogged, setIsLogged] = useState(false);
 

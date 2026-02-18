@@ -19,9 +19,9 @@ export default function Teams() {
   const load = async () => {
     try {
       const [disc, team, playerRes] = await Promise.all([
-        api.get('/disciplines'),
-        api.get('/teams'),
-        api.get('/players')
+        api.get('/disciplinas'),
+        api.get('/equipos'),
+        api.get('/jugadores')
       ]);
       setDisciplines(disc.data);
       setTeams(team.data);
@@ -41,9 +41,9 @@ export default function Teams() {
     setError('');
     try {
       if (editing) {
-        await api.put(`/teams/${editing}`, form);
+        await api.put(`/equipos/${editing}`, form);
       } else {
-        await api.post('/teams', form);
+        await api.post('/equipos', form);
       }
       setForm({ name: '', discipline: '', logoUrl: '' });
       setEditing(null);
@@ -63,7 +63,7 @@ export default function Teams() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
-            await api.delete(`/teams/${id}`);
+            await api.delete(`/equipos/${id}`);
             load();
           }
         }
@@ -74,7 +74,7 @@ export default function Teams() {
   const addPlayer = async () => {
     setPlayerError('');
     try {
-      await api.post('/players', playerForm);
+      await api.post('/jugadores', playerForm);
       setPlayerForm({ name: '', team: '', number: '', position: '', age: '' });
       load();
     } catch (err: any) {

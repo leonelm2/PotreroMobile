@@ -11,7 +11,7 @@ export default function Disciplines() {
 
   const load = async () => {
     try {
-      const res = await api.get('/disciplines');
+      const res = await api.get('/disciplinas');
       setDisciplines(res.data);
     } catch (err) {
       console.error(err);
@@ -28,9 +28,9 @@ export default function Disciplines() {
     setError('');
     try {
       if (editing) {
-        await api.put(`/disciplines/${editing}`, form);
+        await api.put(`/disciplinas/${editing}`, form);
       } else {
-        await api.post('/disciplines', form);
+        await api.post('/disciplinas', form);
       }
       setForm({ name: '', description: '' });
       setEditing(null);
@@ -55,7 +55,7 @@ export default function Disciplines() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
-            await api.delete(`/disciplines/${id}`);
+            await api.delete(`/disciplinas/${id}`);
             load();
           }
         }

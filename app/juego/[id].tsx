@@ -1,11 +1,11 @@
-// app/game/[id].tsx
+// app/juego/[id].tsx
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getToken } from "../../auth/_authStore";
 import api from "../api/api";
 
-interface Game {
+interface Juego {
   _id: string;
   name: string;
   description: string;
@@ -13,16 +13,16 @@ interface Game {
   price: number;
 }
 
-export default function GameDetail() {
+export default function DetalleJuego() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const [game, setGame] = useState<Game | null>(null);
+  const [juego, setJuego] = useState<Juego | null>(null);
 
   useEffect(() => {
     if (!id) return;
 
-    api.get(`/games/${id}`)
-      .then(r => setGame(r.data))
+    api.get(`/juegos/${id}`)
+      .then(r => setJuego(r.data))
       .catch(console.log);
   }, [id]);
 
@@ -58,7 +58,7 @@ export default function GameDetail() {
         return;
       }
 
-      const endpoint = `/purchases/${id}`;
+      const endpoint = `/compras/${id}`;
 
       const res = await api.post(
         endpoint,
@@ -66,22 +66,22 @@ export default function GameDetail() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      Alert.alert("Éxito", `Compra iniciada para: ${game?.name || 'juego'}. Estado: ${res.data?.status}`);
-      router.push("/cart");
+      Alert.alert("Éxito", `Compra iniciada para: ${juego?.name || 'juego'}. Estado: ${res.data?.status}`);
+      router.push("/carrito");
     } catch (error: any) {
       const errorMsg = error?.response?.data?.msg || error?.response?.data?.message;
       const statusCode = error?.response?.status;
 
       // Manejo específico de errores
       if (statusCode === 400 && errorMsg?.includes("Ya compraste")) {
-        const msg = `Ya tienes "${game?.name}" en tu biblioteca.\n\nVe a tu biblioteca para acceder.`;
+        const msg = `Ya tienes "${juego?.name}" en tu biblioteca.\n\nVe a tu biblioteca para acceder.`;
         // Mostrar banner en pantalla en vez de un Alert
         setBannerMsg(msg);
         setShowBanner(true);
         // redirigir automáticamente después de un corto delay
         if (timerRef.current) clearTimeout(timerRef.current);
         timerRef.current = setTimeout(() => {
-          router.push("/(tabs)/library");
+          router.push("/(tabs)/biblioteca");
         }, 2600) as any;
       } else if (statusCode === 401 || statusCode === 403) {
         Alert.alert("Acceso denegado", "Debes iniciar sesión para comprar");
@@ -94,7 +94,7 @@ export default function GameDetail() {
   }
 
 
-  if (!game) return (
+  if (!juego) return (
     <View style={styles.page}>
       <Text style={{color:"#fff"}}>Cargando...</Text>
     </View>
@@ -113,16 +113,16 @@ export default function GameDetail() {
 
       <ScrollView style={styles.page}>
       <Image 
-        source={{ uri: `http://192.168.0.17:5000${game.image}` }} 
+        source={{ uri: `http://192.168.0.17:5000${juego.image}` }} 
         style={styles.cover} 
       />
       <View style={styles.content}>
-        <Text style={styles.title}>{game.name}</Text>
-        <Text style={styles.desc}>{game.description}</Text>
+        <Text style={styles.title}>{juego.name}</Text>
+        <Text style={styles.desc}>{juego.description}</Text>
 
         <View style={{ flexDirection: "row", marginTop: 16, gap: 12 }}>
           <TouchableOpacity style={styles.buyBtn} onPress={handleBuy}>
-            <Text style={styles.buyText}>Comprar ${game.price}</Text>
+            <Text style={styles.buyText}>Comprar ${juego.price}</Text>
           </TouchableOpacity>
         </View>
       </View>

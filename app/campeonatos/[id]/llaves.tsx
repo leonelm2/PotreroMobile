@@ -32,7 +32,7 @@ export default function BracketScreen() {
   const load = async () => {
     if (!id) return;
     try {
-      const res = await api.get(`/championships/${id}/bracket`);
+      const res = await api.get(`/campeonatos/${id}/llaves`);
       setMatches(res.data || []);
     } catch (error) {
       console.error('Error loading bracket:', error);
@@ -68,7 +68,7 @@ export default function BracketScreen() {
     const payload = editing[matchId];
     if (!payload) return;
     try {
-      await api.put(`/matches/${matchId}/result`, payload);
+      await api.put(`/partidos/${matchId}/resultado`, payload);
       setEditing((prev) => {
         const next = { ...prev };
         delete next[matchId];

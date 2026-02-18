@@ -43,7 +43,7 @@ export default function ChampionshipTeamsScreen() {
   const load = async () => {
     if (!id) return;
     try {
-      const res = await api.get(`/championships/${id}/teams`);
+      const res = await api.get(`/campeonatos/${id}/equipos`);
       setData(res.data);
       setError('');
     } catch (err: any) {
@@ -77,7 +77,7 @@ export default function ChampionshipTeamsScreen() {
   const savePlayer = async () => {
     if (!editingPlayer) return;
     try {
-      await api.put(`/players/${editingPlayer}`, { name: playerName });
+      await api.put(`/jugadores/${editingPlayer}`, { name: playerName });
       setEditingPlayer(null);
       setPlayerName('');
       load();
@@ -99,7 +99,7 @@ export default function ChampionshipTeamsScreen() {
   const saveTeam = async () => {
     if (!editingTeam) return;
     try {
-      await api.put(`/teams/${editingTeam}`, { name: teamName });
+      await api.put(`/equipos/${editingTeam}`, { name: teamName });
       setEditingTeam(null);
       setTeamName('');
       load();

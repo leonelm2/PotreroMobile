@@ -1,5 +1,5 @@
 // --- frontend/src/auth/AuthProvider.jsx ---
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import api from '../api'
 
 
@@ -20,7 +20,7 @@ setLoading(false)
 
 
 const login = async (usernameOrEmail, password) => {
-const res = await api.post('/auth/login', { usernameOrEmail, password })
+	const res = await api.post('/autenticacion/iniciar-sesion', { usernameOrEmail, password })
 localStorage.setItem('potrero_token', res.data.token)
 localStorage.setItem('potrero_user', JSON.stringify(res.data.user))
 setUser(res.data.user)
@@ -29,7 +29,7 @@ return res.data
 
 
 const register = async (username, email, password) => {
-const res = await api.post('/auth/register', { username, email, password })
+	const res = await api.post('/autenticacion/registro', { username, email, password })
 localStorage.setItem('potrero_token', res.data.token)
 localStorage.setItem('potrero_user', JSON.stringify(res.data.user))
 setUser(res.data.user)

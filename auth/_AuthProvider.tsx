@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (usernameOrEmail: string, password: string) => {
-    const res = await api.post('/auth/login', { usernameOrEmail, password });
+    const res = await api.post('/autenticacion/iniciar-sesion', { usernameOrEmail, password });
     await AsyncStorage.setItem('potrero_token', res.data.token);
     await AsyncStorage.setItem('potrero_user', JSON.stringify(res.data.user));
     setUser(res.data.user);
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const register = async (username: string, email: string, password: string) => {
-    const res = await api.post('/auth/register', { username, email, password });
+    const res = await api.post('/autenticacion/registro', { username, email, password });
     await AsyncStorage.setItem('potrero_token', res.data.token);
     await AsyncStorage.setItem('potrero_user', JSON.stringify(res.data.user));
     setUser(res.data.user);
